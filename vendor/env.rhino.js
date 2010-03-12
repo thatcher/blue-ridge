@@ -1,5 +1,5 @@
 /*
- * Envjs core-env.1.2.0.5 
+ * Envjs core-env.1.2.0.2 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -37,12 +37,12 @@ __this__ = this;
 Envjs.appCodeName  = "Envjs";
 
 //eg "Gecko/20070309 Firefox/2.0.0.3"
-Envjs.appName      = "Resig/20070309 PilotFish/1.2.0.5";
+Envjs.appName      = "Resig/20070309 PilotFish/1.2.0.2";
 
 Envjs.version = "1.6";//?
 
 /*
- * Envjs core-env.1.2.0.5 
+ * Envjs core-env.1.2.0.2 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -75,13 +75,7 @@ Envjs.NONE = 3;
  */
 Envjs.lineSource = function(e){};
 
-/**
- * 
- * @param {Object} event
- */
-Envjs.defaultEventBehavior = function(event){
-    console.log('handling default event behavior %s', event);
-};
+
 
 
 /**
@@ -143,15 +137,13 @@ Envjs.loadLocalScript = function(script){
                 //ok this script type is allowed
                 break;
             }
-            if(i+1 == types.length){
-                //console.log('wont load script type %s', script.type);
+            if(i+1 == types.length)
                 return false;
-            }
         }
     }
     
     try{
-        //console.log('handling inline scripts');
+        //handle inline scripts
         if(!script.src.length){
             Envjs.loadInlineScript(script);
             return true;
@@ -176,7 +168,7 @@ Envjs.loadLocalScript = function(script){
     }
     base = "" + script.ownerDocument.location;
     //filename = Envjs.uri(script.src.match(/([^\?#]*)/)[1], base );
-    //console.log('loading script from base %s', base);
+    //console.log('base %s', base);
     filename = Envjs.uri(script.src, base);
     try {          
         xhr = new XMLHttpRequest();
@@ -334,7 +326,7 @@ Envjs.loadFrame = function(frame, url){
 
 })();
 /*
- * Envjs rhino-env.1.2.0.5 
+ * Envjs rhino-env.1.2.0.2 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -345,7 +337,7 @@ var __context__ = Packages.org.mozilla.javascript.Context.getCurrentContext();
 Envjs.platform       = "Rhino";
 Envjs.revision       = "1.7.0.rc2";
 /*
- * Envjs rhino-env.1.2.0.5 
+ * Envjs rhino-env.1.2.0.2 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -476,7 +468,6 @@ Envjs.onExit = function(callback){
  * @param {Object} base
  */
 Envjs.uri = function(path, base){
-    //console.log('constructing uri from path %s and base %s', path, base);
     var protocol = new RegExp('(^file\:|^http\:|^https\:)'),
         m = protocol.exec(path),
         baseURI, absolutepath;
@@ -484,15 +475,8 @@ Envjs.uri = function(path, base){
         return (new java.net.URL(path).toString()+'')
             .replace('file:/', 'file:///');
     }else if(base){
-        baseURI = base.substring(0, base.lastIndexOf('/'));
-        if(baseURI.length > 0){
-            absolutepath = baseURI + '/' + path;
-        }else{
-            absolutepath = (new java.net.URL(new java.net.URL(base), path)+'')
-                .replace('file:/', 'file:///');
-        }
-        //console.log('constructed absolute path %s', absolutepath);
-        return absolutepath;
+        return (new java.net.URL(new java.net.URL(base), path)+'')
+            .replace('file:/', 'file:///');
     }else{
         //return an absolute url from a url relative to the window location
         //TODO: window should not be inlined here. this should be passed as a 
@@ -500,7 +484,6 @@ Envjs.uri = function(path, base){
         if(document){
             baseURI = document.baseURI;
             if(baseURI == 'about:blank'){
-                //console.log('about:blank change: baseURI %s', document.baseURI);
                 baseURI = (java.io.File(path).toURL().toString()+'')
                         .replace('file:/', 'file:///');
                 //console.log('baseURI %s', baseURI);
@@ -508,12 +491,10 @@ Envjs.uri = function(path, base){
             }else{
                 if(path.match(/^\//)){
                     //absolute path change
-                    //console.log('absolute path change: baseURI %s', document.baseURI);
                     absolutepath = (new Location(baseURI)).pathname;
                     return baseURI.substring(0, baseURI.lastIndexOf(absolutepath)) + path;
                 }else{
                     //relative path change
-                    //console.log('relative path change: baseURI %s', document.baseURI);
                     base = baseURI.substring(0, baseURI.lastIndexOf('/'));
                     if(base.length > 0){
                         return base + '/' + path;
@@ -543,7 +524,6 @@ Envjs.runAsync = function(fn, onInterupt){
     try{
         run = Envjs.sync(function(){ 
             fn();
-            Envjs.wait();
         });
         Envjs.spawn(run);
     }catch(e){
@@ -828,7 +808,7 @@ var Console,
     console;
 
 /*
- * Envjs console.1.2.0.5 
+ * Envjs console.1.2.0.0 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -1087,7 +1067,7 @@ function appendNode(node, html)
 
 })();
 /*
- * Envjs dom.1.2.0.5 
+ * Envjs dom.1.2.0.2 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -1127,7 +1107,7 @@ var Attr,
 
 
 /*
- * Envjs dom.1.2.0.5 
+ * Envjs dom.1.2.0.2 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -4282,7 +4262,7 @@ __extend__(XMLSerializer.prototype, {
 
 })();
 /*
- * Envjs event.1.2.0.5 
+ * Envjs event.1.2.0.2 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -4302,7 +4282,7 @@ var Event,
     //among other things like general profiling
     Aspect;
 /*
- * Envjs event.1.2.0.5 
+ * Envjs event.1.2.0.2 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -4744,9 +4724,7 @@ function __dispatchEvent__(target, event, bubbles){
         if (bubbles && !event.cancelled){
             __bubbleEvent__(target, event);
         }
-        if(event._cancelable && !event._cancelled && event._preventDefault){
-            Envjs.defaultEventBehavior(event);
-        }
+        
         //console.log('deleting event %s', event.uuid);
         event.target = null;
         event = null;
@@ -5129,7 +5107,7 @@ EventException.UNSPECIFIED_EVENT_TYPE_ERR = 0;
 })();
 
 /*
- * Envjs timer.1.2.0.5 
+ * Envjs timer.1.2.0.2 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -5145,7 +5123,7 @@ var setTimeout,
     clearInterval;
     
 /*
- * Envjs timer.1.2.0.5 
+ * Envjs timer.1.2.0.2 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -5395,7 +5373,7 @@ Envjs.wait = function(wait) {
 
 })();
 /*
- * Envjs html.1.2.0.5 
+ * Envjs html.1.2.0.2 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -5445,7 +5423,7 @@ var HTMLDocument,
     HTMLUnknownElement;
     
 /*
- * Envjs html.1.2.0.5 
+ * Envjs html.1.2.0.2 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -5810,7 +5788,6 @@ Aspect.around({
     switch(doc.parsing){
         case true:
             //handled by parser if included
-            //console.log('html document in parse mode');
             break;
         case false:
             switch(node.namespaceURI){
@@ -8540,7 +8517,7 @@ var CSS2Properties,
     CSSStyleSheet;
     
 /*
- * Envjs css.1.2.0.5 
+ * Envjs css.1.2.0.2 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -9015,7 +8992,7 @@ var XMLParser = {},
 
     
 /*
- * Envjs parser.1.2.0.5 
+ * Envjs parser.1.2.0.2 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -9754,7 +9731,6 @@ var __elementPopped__ = function(ns, name, node){
     switch(doc.parsing){
         case false:
             //innerHTML so dont do loading patterns for parsing
-            //console.log('element popped (implies innerHTML) not in parsing mode %s', node.nodeName);
             break;
         case true:
             switch(doc+''){
@@ -9763,7 +9739,6 @@ var __elementPopped__ = function(ns, name, node){
                 case '[object HTMLDocument]':
                     switch(node.namespaceURI){
                         case "http://n.validator.nu/placeholder/":
-                            //console.log('got script during parsing %s', node.textContent);
                             break;
                         case null:
                         case "":
@@ -9896,7 +9871,7 @@ __extend__(HTMLElement.prototype,{
 
 })();
 /*
- * Envjs xhr.1.2.0.5 
+ * Envjs xhr.1.2.0.2 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -9911,7 +9886,7 @@ var Location,
     XMLHttpRequest;
 
 /*
- * Envjs xhr.1.2.0.5 
+ * Envjs xhr.1.2.0.2 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -10443,8 +10418,6 @@ Location = function(url, doc, history){
                     xhr.onreadystatechange = function(){
                         //console.log("readyState %s", xhr.readyState);
                         if(xhr.readyState === 4){
-                            $document.baseURI = new Location(url, $document);
-                            //console.log('new document baseURI %s', $document.baseURI);
                             __exchangeHTMLDocument__($document, xhr.responseText, url);
                         }    
                     };
@@ -10586,7 +10559,7 @@ XMLHttpRequest.prototype = {
                             doc = domparser.parseFromString(_this.responseText+"", 'text/xml');
                         } catch(e) {
                             //Envjs.error('response XML does not appear to be well formed xml', e);
-                            console.warn('parseerror \n%s', e);
+                            console.log('parseerror \n%s', e);
                             doc = document.implementation.createDocument('','error',null);
                             doc.appendChild(doc.createTextNode(e+''));
                         } 
@@ -10677,7 +10650,7 @@ var Window,
 
 
 /*
- * Envjs window.1.2.0.5 
+ * Envjs window.1.2.0.2 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -10929,177 +10902,6 @@ Screen = function(__window__){
     };
 };
 
-/*
- * Copyright (c) 2010 Nick Galbreath
- * http://code.google.com/p/stringencoders/source/browse/#svn/trunk/javascript
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
-*/
-
-/* base64 encode/decode compatible with window.btoa/atob
- *
- * window.atob/btoa is a Firefox extension to convert binary data (the "b")
- * to base64 (ascii, the "a").
- *
- * It is also found in Safari and Chrome.  It is not available in IE.
- *
- * if (!window.btoa) window.btoa = base64.encode
- * if (!window.atob) window.atob = base64.decode
- *
- * The original spec's for atob/btoa are a bit lacking
- * https://developer.mozilla.org/en/DOM/window.atob
- * https://developer.mozilla.org/en/DOM/window.btoa
- *
- * window.btoa and base64.encode takes a string where charCodeAt is [0,255]
- * If any character is not [0,255], then an DOMException(5) is thrown.
- *
- * window.atob and base64.decode take a base64-encoded string
- * If the input length is not a multiple of 4, or contains invalid characters
- *   then an DOMException(5) is thrown.
- */
-var base64 = {};
-base64.PADCHAR = '=';
-base64.ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-
-base64.makeDOMException = function() {
-    // sadly in FF,Safari,Chrome you can't make a DOMException
-    var e, tmp;
-    try {
-	e = new DOMException(DOMException.INVALID_CHARACTER_ERR);
-    } catch (tmp) {
-	// not available, just passback a duck-typed equiv
-	//  Firefox 3.6 has a much more complicated Error object
-	//   but this should suffice
-	e = {
-	    code: 5,
-	    toString: function() { return "Error: INVALID_CHARACTER_ERR: DOM Exception 5"; }
-	};
-    }
-    return e;
-}
-
-base64.getbyte64 = function(s,i) {
-    // This is oddly fast, except on Chrome/V8.
-    //  Minimal or no improvement in performance by using a
-    //   object with properties mapping chars to value (eg. 'A': 0)
-    var idx = base64.ALPHA.indexOf(s.charAt(i));
-    if (idx == -1) {
-	throw base64.makeDOMException();
-    }
-    return idx;
-}
-
-base64.decode = function(s) {
-    // convert to string
-    s = "" + s;
-    var getbyte64 = base64.getbyte64;
-    var pads, i, b10;
-    var imax = s.length
-    if (imax == 0) {
-        return s;
-    }
-
-    if (imax % 4 != 0) {
-	throw base64.makeDOMException();
-    }
-
-    pads = 0
-    if (s.charAt(imax -1) == base64.PADCHAR) {
-        pads = 1;
-        if (s.charAt(imax -2) == base64.PADCHAR) {
-            pads = 2;
-        }
-        // either way, we want to ignore this last block
-        imax -= 4;
-    }
-
-    var x = [];
-    for (i = 0; i < imax; i += 4) {
-        b10 = (getbyte64(s,i) << 18) | (getbyte64(s,i+1) << 12) |
-            (getbyte64(s,i+2) << 6) | getbyte64(s,i+3);
-        x.push(String.fromCharCode(b10 >> 16, (b10 >> 8) & 0xff, b10 & 0xff));
-    }
-
-    switch (pads) {
-    case 1:
-        b10 = (getbyte64(s,i) << 18) | (getbyte64(s,i+1) << 12) | (getbyte64(s,i+2) << 6)
-        x.push(String.fromCharCode(b10 >> 16, (b10 >> 8) & 0xff));
-        break;
-    case 2:
-        b10 = (getbyte64(s,i) << 18) | (getbyte64(s,i+1) << 12);
-        x.push(String.fromCharCode(b10 >> 16));
-        break;
-    }
-    return x.join('');
-}
-
-base64.getbyte = function(s,i) {
-    var x = s.charCodeAt(i);
-    if (x > 255) {
-        throw base64.makeDOMException();
-    }
-    return x;
-}
-
-base64.encode = function(s) {
-    if (arguments.length != 1) {
-	throw new SyntaxError("Not enough arguments");
-    }
-    var padchar = base64.PADCHAR;
-    var alpha   = base64.ALPHA;
-    var getbyte = base64.getbyte;
-
-    var i, b10;
-    var x = [];
-
-    // convert to string
-    s = "" + s;
-
-    var imax = s.length - s.length % 3;
-
-    if (s.length == 0) {
-        return s;
-    }
-    for (i = 0; i < imax; i += 3) {
-        b10 = (getbyte(s,i) << 16) | (getbyte(s,i+1) << 8) | getbyte(s,i+2);
-        x.push(alpha.charAt(b10 >> 18));
-        x.push(alpha.charAt((b10 >> 12) & 0x3F));
-        x.push(alpha.charAt((b10 >> 6) & 0x3f));
-        x.push(alpha.charAt(b10 & 0x3f));
-    }
-    switch (s.length - imax) {
-    case 1:
-        b10 = getbyte(s,i) << 16;
-        x.push(alpha.charAt(b10 >> 18) + alpha.charAt((b10 >> 12) & 0x3F) +
-               padchar + padchar);
-        break;
-    case 2:
-        b10 = (getbyte(s,i) << 16) | (getbyte(s,i+1) << 8);
-        x.push(alpha.charAt(b10 >> 18) + alpha.charAt((b10 >> 12) & 0x3F) +
-               alpha.charAt((b10 >> 6) & 0x3f) + padchar);
-        break;
-    }
-    return x.join('');
-}
 //These descriptions of window properties are taken loosely David Flanagan's
 //'JavaScript - The Definitive Guide' (O'Reilly)
 
@@ -11367,12 +11169,6 @@ Window = function(scope, parent, opener){
         },
         prompt : function(message, defaultMsg){
             Envjs.prompt(message, defaultMsg);
-        },
-        btoa: function(binary){
-            return base64.encode(binary);
-        },
-        atob: function(ascii){
-            return base64.decode(ascii);
         },
         onload: function(){},
         onunload: function(){},
