@@ -1,5 +1,5 @@
 env.rhino.js:
-* Version: 1.2.0.2
+* Version: 1.2.0.5
 * Modifications: removed the Env.js header log message
 
 js.jar:
