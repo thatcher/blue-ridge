@@ -1,5 +1,5 @@
 /*
- * Envjs core-env.1.2.0.5 
+ * Envjs core-env.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -37,12 +37,12 @@ __this__ = this;
 Envjs.appCodeName  = "Envjs";
 
 //eg "Gecko/20070309 Firefox/2.0.0.3"
-Envjs.appName      = "Resig/20070309 PilotFish/1.2.0.5";
+Envjs.appName      = "Resig/20070309 PilotFish/1.2.0.6";
 
 Envjs.version = "1.6";//?
 
 /*
- * Envjs core-env.1.2.0.5 
+ * Envjs core-env.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -79,9 +79,7 @@ Envjs.lineSource = function(e){};
  * 
  * @param {Object} event
  */
-Envjs.defaultEventBehavior = function(event){
-    console.log('handling default event behavior %s', event);
-};
+Envjs.defaultEventBehaviors = {};
 
 
 /**
@@ -185,7 +183,6 @@ Envjs.loadLocalScript = function(script){
         xhr.onreadystatechange = function(){
             //console.log("readyState %s", xhr.readyState);
             if(xhr.readyState === 4){
-                //TODO this is rhino specific
                 Envjs.eval(
                     script.ownerDocument.ownerWindow,
                     xhr.responseText,
@@ -226,7 +223,7 @@ Envjs.sleep = function(millseconds){};
 /**
  * Interval to wait on event loop when nothing is happening
  */
-Envjs.WAIT_INTERVAL = 100;//milliseconds
+Envjs.WAIT_INTERVAL = 20;//milliseconds
 
 
 /**
@@ -334,7 +331,7 @@ Envjs.loadFrame = function(frame, url){
 
 })();
 /*
- * Envjs rhino-env.1.2.0.5 
+ * Envjs rhino-env.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -345,7 +342,7 @@ var __context__ = Packages.org.mozilla.javascript.Context.getCurrentContext();
 Envjs.platform       = "Rhino";
 Envjs.revision       = "1.7.0.rc2";
 /*
- * Envjs rhino-env.1.2.0.5 
+ * Envjs rhino-env.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -828,7 +825,7 @@ var Console,
     console;
 
 /*
- * Envjs console.1.2.0.5 
+ * Envjs console.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -1087,7 +1084,7 @@ function appendNode(node, html)
 
 })();
 /*
- * Envjs dom.1.2.0.5 
+ * Envjs dom.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -1127,7 +1124,7 @@ var Attr,
 
 
 /*
- * Envjs dom.1.2.0.5 
+ * Envjs dom.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -4282,7 +4279,7 @@ __extend__(XMLSerializer.prototype, {
 
 })();
 /*
- * Envjs event.1.2.0.5 
+ * Envjs event.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -4302,7 +4299,7 @@ var Event,
     //among other things like general profiling
     Aspect;
 /*
- * Envjs event.1.2.0.5 
+ * Envjs event.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -4744,8 +4741,15 @@ function __dispatchEvent__(target, event, bubbles){
         if (bubbles && !event.cancelled){
             __bubbleEvent__(target, event);
         }
-        if(event._cancelable && !event._cancelled && event._preventDefault){
-            Envjs.defaultEventBehavior(event);
+        if(!event._preventDefault){
+            //At this point I'm guessing that just HTMLEvents are concerned
+            //with default behavior being executed in a browser but I could be
+            //wrong as usual.  The goal is much more to filter at this point
+            //what events have no need to be handled
+            console.log('triggering default behavior for %s', event.type);
+            if(event.type in Envjs.defaultEventBehaviors){
+                Envjs.defaultEventBehaviors[event.type](event);
+            }
         }
         //console.log('deleting event %s', event.uuid);
         event.target = null;
@@ -5129,7 +5133,7 @@ EventException.UNSPECIFIED_EVENT_TYPE_ERR = 0;
 })();
 
 /*
- * Envjs timer.1.2.0.5 
+ * Envjs timer.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -5145,7 +5149,7 @@ var setTimeout,
     clearInterval;
     
 /*
- * Envjs timer.1.2.0.5 
+ * Envjs timer.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -5395,7 +5399,7 @@ Envjs.wait = function(wait) {
 
 })();
 /*
- * Envjs html.1.2.0.5 
+ * Envjs html.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -5445,7 +5449,7 @@ var HTMLDocument,
     HTMLUnknownElement;
     
 /*
- * Envjs html.1.2.0.5 
+ * Envjs html.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -8540,7 +8544,7 @@ var CSS2Properties,
     CSSStyleSheet;
     
 /*
- * Envjs css.1.2.0.5 
+ * Envjs css.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -9015,7 +9019,7 @@ var XMLParser = {},
 
     
 /*
- * Envjs parser.1.2.0.5 
+ * Envjs parser.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -9896,7 +9900,7 @@ __extend__(HTMLElement.prototype,{
 
 })();
 /*
- * Envjs xhr.1.2.0.5 
+ * Envjs xhr.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -9911,7 +9915,7 @@ var Location,
     XMLHttpRequest;
 
 /*
- * Envjs xhr.1.2.0.5 
+ * Envjs xhr.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -10435,7 +10439,7 @@ Location = function(url, doc, history){
             if($document){
                 //console.log("fetching %s (async? %s)", url, $document.async);
                 xhr = new XMLHttpRequest();
-                xhr.open("GET", url, $document.async);
+                xhr.open("GET", url, false);//$document.async);
                 
                 if($document.toString()=="[object HTMLDocument]"){
                     //tell the xhr to not parse the document as XML
@@ -10677,7 +10681,7 @@ var Window,
 
 
 /*
- * Envjs window.1.2.0.5 
+ * Envjs window.1.2.0.6 
  * Pure JavaScript Browser Environment
  * By John Resig <http://ejohn.org/> and the Envjs Team
  * Copyright 2008-2010 John Resig, under the MIT License
@@ -11398,9 +11402,28 @@ var __windows__ = {};
 //finally pre-supply the window with the window-like environment
 //console.log('Default Window');
 new Window(__this__, __this__);
-//console.log('[ %s ]',window.navigator.userAgent);
+console.log('[ %s ]',window.navigator.userAgent);
 
+/**
+ * 
+ * @param {Object} event
+ */
+__extend__(Envjs.defaultEventBehaviors,{
 
+    'submit': function(event){
+        var target = event.target;
+        while(target.nodeName != 'FORM'){
+            target = target.parentNode;
+        }
+        if(target.nodeName == 'FORM'){
+            target.submit
+        }   
+    },
+    'click': function(event){
+        console.log('handling event target default behavior for click');
+    }
+
+});
 /**
  * @author john resig & the envjs team
  * @uri http://www.envjs.com/
